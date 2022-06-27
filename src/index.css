@@ -11,3 +11,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.MuiDialog-paperWidthSm {
+  overflow-x: hidden !important;
+}
+
+.image_wrapper {
+  margin-left: 6rem;
+}
