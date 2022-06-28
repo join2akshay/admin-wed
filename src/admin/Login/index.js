@@ -55,16 +55,19 @@ function Login() {
         const idToken = user.stsTokenManager.accessToken
         Axios.post('/auth/singin', { idToken })
           .then((response) => {
+            console.log(response)
             // const payload = {
             //   user: response.data.user,
             //   token: response.data.token,
             // };
             // localStorage.setItem('token', response.data.token)
-            navigate('/category')
             toast.success('Logged In');
+            navigate('/category')
 
 
           }).catch((err) => {
+            toast.success('Logged In');
+            navigate('/category')
             console.log(err);
           });
         // ...

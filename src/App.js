@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Admin from "./admin";
 import ItemList from "./admin/itemList";
 import SubcategoryList from "./admin/subcategoryList";
@@ -59,3 +59,16 @@ const app = initializeApp(firebaseConfig);
 }
 
 export default App;
+
+
+const ProtectedRoute = ({
+  user,
+  redirectPath = '/',
+  children,
+}) => {
+  if () {
+    return <Navigate to={redirectPath} replace />;
+  }
+
+  return children;
+};
