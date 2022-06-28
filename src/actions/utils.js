@@ -1,6 +1,6 @@
 import axios from 'axios';
 export const Axios = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL || 'https://wedppy.herokuapp.com/api',
+  baseURL: process.env.REACT_APP_API_BASE_URL1 || 'https://wedppy.herokuapp.com/api',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
