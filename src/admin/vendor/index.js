@@ -1,28 +1,43 @@
-import { Box, Button, Dialog, DialogTitle, Divider, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Grid } from '@mui/material';
-import React, { useEffect, useState } from 'react'
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogTitle,
+  Divider,
+  IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Grid,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
 // import { AdminAxios } from '../actions/utils';
-import { SketchPicker } from 'react-color';
+import { SketchPicker } from "react-color";
 import { toast } from "react-toastify";
-import axios from 'axios';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ConfirmDialog from '../../delete';
-import { AdminAxios } from '../../actions/utils';
-import Header from '../../Nav';
-
+import axios from "axios";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ConfirmDialog from "../../delete";
+import { AdminAxios } from "../../actions/utils";
+import Header from "../../Nav";
 
 // import Files from "react-butterfiles";
 
 export default function VendorList() {
-  const [allData, setallData] = useState([])
+  const [allData, setallData] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [openD, setOpenD] = React.useState(false);
 
-  const [selectCategory, setSelectCateogry] = useState(null)
+  const [selectCategory, setSelectCateogry] = useState(null);
   const handleClickOpen = () => {
     setOpen(true);
   };
   const handleClickOpen2 = () => {
-    setSelectCateogry(null)
+    setSelectCateogry(null);
     setOpen(true);
   };
 
@@ -31,28 +46,26 @@ export default function VendorList() {
   };
 
   useEffect(() => {
-    getList()
-
-  }, [])
+    getList();
+  }, []);
 
   const getList = () => {
     AdminAxios.get(`/vendor`)
       .then((response) => {
-        console.log(response.data[0].data)
-        setallData(response.data[0].data)
+        console.log(response.data[0].data);
+        setallData(response.data[0].data);
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
         // dispatch(loaderMasterStopAction());
       });
-
   };
 
   const deletePost = (id) => {
-    console.log(selectCategory)
+    console.log(selectCategory);
     AdminAxios.delete(`/vendor/${selectCategory._id}`)
       .then((response) => {
-        setSelectCateogry(null)
+        setSelectCateogry(null);
 
         getList();
         // dispatch(loaderMasterStopAction());
@@ -60,27 +73,33 @@ export default function VendorList() {
       .catch((err) => {
         // dispatch(loaderMasterStopAction());
       });
-
-  }
+  };
 
   const editCategory = (data) => {
-    setSelectCateogry(data)
-    handleClickOpen()
-  }
+    setSelectCateogry(data);
+    handleClickOpen();
+  };
 
   return (
     <div>
       <Header />
 
-      <Grid container style={{ marginTop: '4rem' }}>
+      <Grid container style={{ marginTop: "4rem" }}>
         <Grid item xs={12}>
-          <Button variant='contained' onClick={handleClickOpen2} style={{ background: '#FFD64E', color: 'black', fontWeight: '600',marginTop:'1rem' }}>
+          <Button
+            variant="contained"
+            onClick={handleClickOpen2}
+            style={{
+              background: "#FFD64E",
+              color: "black",
+              fontWeight: "600",
+              marginTop: "1rem",
+            }}
+          >
             Add New Vendor
           </Button>
         </Grid>
       </Grid>
-
-
 
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -100,21 +119,37 @@ export default function VendorList() {
             {allData.map((row) => (
               <TableRow
                 key={row.id}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {row?.name?.first} {' '}  {row?.name?.last}
+                  {row?.name?.first} {row?.name?.last}
                 </TableCell>
                 <TableCell align="right">{row?.email} </TableCell>
-                <TableCell align="right"><img src={row?.profileUrl ||
-                  'https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'} width='100' height='100' /> </TableCell>
+                <TableCell align="right">
+                  <img
+                    src={
+                      row?.profileUrl ||
+                      "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+                    }
+                    width="100"
+                    height="100"
+                  />{" "}
+                </TableCell>
 
                 <TableCell align="right">{row?.phone}</TableCell>
                 <TableCell align="right">{row?.isBanned}</TableCell>
                 <TableCell align="right">{row?.roles}</TableCell>
-                <TableCell align="right">  <IconButton aria-label="delete" onClick={() => { setSelectCateogry(row); setOpenD(true) }}>
-                  <DeleteIcon />
-                </IconButton>
+                <TableCell align="right">
+                  {" "}
+                  <IconButton
+                    aria-label="delete"
+                    onClick={() => {
+                      setSelectCateogry(row);
+                      setOpenD(true);
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
                   <ConfirmDialog
                     title="Delete Post?"
                     open={openD}
@@ -135,39 +170,34 @@ export default function VendorList() {
         </Table>
       </TableContainer>
       <SimpleDialog
-
         selectCategory={selectCategory}
         open={open}
         onClose={handleClose}
       />
     </div>
-  )
+  );
 }
-
 
 function SimpleDialog(props) {
   const { onClose, open, selectCategory } = props;
-  console.log(selectCategory)
-  const [bgColor, setBgColor] = useState(selectCategory ? selectCategory.background : null)
+  console.log(selectCategory);
+  const [bgColor, setBgColor] = useState(
+    selectCategory ? selectCategory.background : null
+  );
 
   const [category, setCategory] = useState(
-    selectCategory ? selectCategory :
-      { "name": { "firstL": "", "last": "" }, "email": "" }
-  )
+    selectCategory
+      ? selectCategory
+      : { name: { firstL: "", last: "" }, email: "" }
+  );
 
   useEffect(() => {
-
     if (selectCategory) {
-
-      setCategory(selectCategory)
+      setCategory(selectCategory);
     } else {
-      setCategory({ "name": { "firstL": "", "last": "" }, "email": "" })
-
+      setCategory({ name: { firstL: "", last: "" }, email: "" });
     }
-
-
-  }, [selectCategory])
-
+  }, [selectCategory]);
 
   const handleClose = () => {
     onClose();
@@ -178,39 +208,36 @@ function SimpleDialog(props) {
   };
 
   const update = () => {
-    AdminAxios.put(`/vendor/${category.id}`, { update:category })
+    AdminAxios.put(`/vendor/${category.id}`, { update: category })
       .then((response) => {
-        console.log(response.data)
-        onClose()
+        console.log(response.data);
+        onClose();
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
         // dispatch(loaderMasterStopAction());
       });
-  }
+  };
 
   const create = () => {
-    AdminAxios.post(`/vendor`, { document:category })
+    AdminAxios.post(`/vendor`, { document: category })
       .then((response) => {
-        console.log(response.data)
-        onClose()
+        toast.success(response.data.message)
+        onClose();
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
-        // dispatch(loaderMasterStopAction());
+        toast.error(err.response.data.message);
       });
-  }
+  };
 
   const handleSuccess = () => {
-
     if (category.id) {
-      update()
+      update();
     } else {
-      create()
+      create();
     }
-
-
-  }
+  };
 
   const handleChangeComplete = (color) => {
     setCategory({ ...category, background: color.hex });
@@ -219,37 +246,34 @@ function SimpleDialog(props) {
   const handlefilechange = async (e, type) => {
     const file = e.target.files[0];
     const data = new FormData();
-    data.append('file', file);
-    data.append('upload_preset', 'ythigm1q');
-    data.append('cloud_name', 'dhdv5nqpb');
+    data.append("file", file);
+    data.append("upload_preset", "ythigm1q");
+    data.append("cloud_name", "dhdv5nqpb");
     const resp = await toast.promise(
       axios.post(
-        `https://api.cloudinary.com/v1_1/dhdv5nqpb/image/upload/?api_key=${process.env.REACT_APP_CLOUDINARY_KEY
+        `https://api.cloudinary.com/v1_1/dhdv5nqpb/image/upload/?api_key=${
+          process.env.REACT_APP_CLOUDINARY_KEY
         }&timestamp=${Date.now()}`,
-        data,
+        data
       ),
       {
-        pending: 'Uploading profile image',
-        success: 'Uploaded 👌',
-        error: 'Upload failed 🤯',
-      },
+        pending: "Uploading profile image",
+        success: "Uploaded 👌",
+        error: "Upload failed 🤯",
+      }
     );
-    if (type == 'image') {
+    if (type == "image") {
       setCategory({ ...category, image: resp?.data?.secure_url });
-
     } else {
-
       setCategory({ ...category, iconImage: resp?.data?.secure_url });
     }
   };
 
-
-
   return (
-    <Dialog onClose={handleClose} open={open} style={{ overFlowX: 'hidden' }}>
+    <Dialog onClose={handleClose} open={open} style={{ overFlowX: "hidden" }}>
       <DialogTitle>Add New Vendor</DialogTitle>
       <Divider />
-      <Grid container style={{ margin: '1rem' }} style={{ margin: '1rem' }}>
+      <Grid container style={{ margin: "1rem" }}>
         <Grid item xs={12}>
           <Box>
             {/* <label>
@@ -259,19 +283,29 @@ function SimpleDialog(props) {
         </Grid>
         <Grid item xs={12}>
           <Box>
-            <TextField id="standard-basic" label="First name" variant="standard" placeholder='Enter vendors first Name' name="firstL" value={category?.name.firstL} onChange={(e) => setCategory((prevState) => ({
-              ...prevState,
-              name: {
-                ...prevState.name,
-                [e.target.name]: e.target.value,
-              },
-            }))} />
+            <TextField
+              id="standard-basic"
+              label="First name"
+              variant="standard"
+              placeholder="Enter vendors first Name"
+              name="firstL"
+              value={category?.name.firstL}
+              onChange={(e) =>
+                setCategory((prevState) => ({
+                  ...prevState,
+                  name: {
+                    ...prevState.name,
+                    [e.target.name]: e.target.value,
+                  },
+                }))
+              }
+            />
           </Box>
         </Grid>
       </Grid>
       <Divider />
 
-      <Grid container style={{ margin: '1rem' }} style={{ margin: '1rem' }}>
+      <Grid container style={{ margin: "1rem" }}>
         <Grid item xs={12}>
           <Box>
             {/* <label>
@@ -281,19 +315,29 @@ function SimpleDialog(props) {
         </Grid>
         <Grid item xs={12}>
           <Box>
-            <TextField id="standard-basic" label="First name" variant="standard" placeholder='Enter vendors first Name' name="last" value={category?.name.last} onChange={(e) => setCategory((prevState) => ({
-              ...prevState,
-              name: {
-                ...prevState.name,
-                [e.target.name]: e.target.value,
-              },
-            }))} />
+            <TextField
+              id="standard-basic"
+              label="First name"
+              variant="standard"
+              placeholder="Enter vendors first Name"
+              name="last"
+              value={category?.name.last}
+              onChange={(e) =>
+                setCategory((prevState) => ({
+                  ...prevState,
+                  name: {
+                    ...prevState.name,
+                    [e.target.name]: e.target.value,
+                  },
+                }))
+              }
+            />
           </Box>
         </Grid>
       </Grid>
       <Divider />
 
-      <Grid container style={{ margin: '1rem' }}>
+      <Grid container style={{ margin: "1rem" }}>
         <Grid item xs={12}>
           <Box>
             {/* <label>
@@ -303,22 +347,37 @@ function SimpleDialog(props) {
         </Grid>
         <Grid item xs={12}>
           <Box>
-            <TextField id="standard-basic" value={category?.description} label="Email" variant="standard" name='email' onChange={(e) => { setCategory({ ...category, email: e.target.value }); }} />
+            <TextField
+              id="standard-basic"
+              value={category?.description}
+              label="Email"
+              variant="standard"
+              name="email"
+              onChange={(e) => {
+                setCategory({ ...category, email: e.target.value });
+              }}
+            />
           </Box>
         </Grid>
       </Grid>
       <Divider />
 
-
-      <Grid container style={{ margin: '1rem' }} justifyContent="center">
+      <Grid container style={{ margin: "1rem" }} justifyContent="center">
         <Grid item xs={12} justifyContent="center">
-          <Box display='flex' justifyContent="center">
-            <Button onClick={handleSuccess} variant="contained" style={{ background: '#FFD64E', color: 'black', fontWeight: '600' }}>
+          <Box display="flex" justifyContent="center">
+            <Button
+              onClick={handleSuccess}
+              variant="contained"
+              style={{
+                background: "#FFD64E",
+                color: "black",
+                fontWeight: "600",
+              }}
+            >
               Add
             </Button>
           </Box>
         </Grid>
-
       </Grid>
     </Dialog>
   );
