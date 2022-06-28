@@ -112,9 +112,26 @@ export default function UserList() {
                 <TableCell align="right">{row?.phone}</TableCell>
                 <TableCell align="right">{row?.isBanned ? 'Unactive':'Active'}</TableCell>
                 <TableCell align="right">{row?.roles}</TableCell>
-                <TableCell align="right">  <IconButton aria-label="delete" onClick={() => { setSelectCateogry(row); setOpenD(true) }}>
-                  <DeleteIcon />
-                </IconButton>
+                <TableCell align="right">  {
+                  row?.isBanned ? <>
+                    <Button onClick={() => {
+                      setSelectCateogry(row);
+                      deletePost()
+                    }}>Restore</Button>
+
+                  </> :
+                    <>
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() => {
+                          setSelectCateogry(row);
+                          setOpenD(true);
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </>
+                }
                   <ConfirmDialog
                     title="Ban User?"
                     open={openD}
