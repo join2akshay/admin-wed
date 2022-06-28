@@ -107,7 +107,7 @@ export default function VendorList() {
             <TableRow>
               <TableCell>Name </TableCell>
               <TableCell align="right">Email</TableCell>
-              <TableCell align="right">Image</TableCell>
+              {/* <TableCell align="right">Image</TableCell> */}
               <TableCell align="right">Phone Number</TableCell>
               <TableCell align="right">Satus</TableCell>
 
@@ -125,7 +125,7 @@ export default function VendorList() {
                   {row?.name?.first} {row?.name?.last}
                 </TableCell>
                 <TableCell align="right">{row?.email} </TableCell>
-                <TableCell align="right">
+                {/* <TableCell align="right">
                   <img
                     src={
                       row?.profileUrl ||
@@ -134,10 +134,10 @@ export default function VendorList() {
                     width="100"
                     height="100"
                   />{" "}
-                </TableCell>
+                </TableCell> */}
 
                 <TableCell align="right">{row?.phone}</TableCell>
-                <TableCell align="right">{row?.isBanned}</TableCell>
+                <TableCell align="right">{row?.isBanned ? 'Unactive' : 'Active'}</TableCell>
                 <TableCell align="right">{row?.roles}</TableCell>
                 <TableCell align="right">
                   {" "}
@@ -349,12 +349,37 @@ function SimpleDialog(props) {
           <Box>
             <TextField
               id="standard-basic"
-              value={category?.description}
+              value={category?.email}
               label="Email"
               variant="standard"
               name="email"
               onChange={(e) => {
                 setCategory({ ...category, email: e.target.value });
+              }}
+            />
+          </Box>
+        </Grid>
+      </Grid>
+      <Divider />
+
+      <Grid container style={{ margin: "1rem" }}>
+        <Grid item xs={12}>
+          <Box>
+            {/* <label>
+              Description
+            </label> */}
+          </Box>
+        </Grid>
+        <Grid item xs={12}>
+          <Box>
+            <TextField
+              id="standard-basic"
+              value={category?.phone}
+              label="Phone"
+              variant="standard"
+              name="phone"
+              onChange={(e) => {
+                setCategory({ ...category, phone: e.target.value });
               }}
             />
           </Box>

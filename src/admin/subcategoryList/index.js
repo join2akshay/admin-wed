@@ -47,7 +47,7 @@ export default function SubcategoryList() {
   };
 
   const getListbyId = () => {
-    AdminAxios.patch(`/sub-category`, { query:{categoryId:cat}})
+    AdminAxios.patch(`/sub-category?categoryId=${cat}`, { })
       .then((response) => {
         console.log(response.data)
         let tempdata = [];
@@ -56,6 +56,7 @@ export default function SubcategoryList() {
           tempdata.push({ label: item.name, value: item.id })
         })
         setallSubCat(tempdata)
+        setallData(response.data)
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
@@ -91,9 +92,13 @@ export default function SubcategoryList() {
   }
 
   useEffect(() => {
+if(cat){
+  getListbyId()
 
-    getSubCat()
-    // getListbyId()
+}else{
+  getSubCat()
+
+}
 
 
   }, [cat])
