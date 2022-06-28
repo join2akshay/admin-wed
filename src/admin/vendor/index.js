@@ -141,22 +141,35 @@ export default function VendorList() {
                 <TableCell align="right">{row?.roles}</TableCell>
                 <TableCell align="right">
                   {" "}
-                  <IconButton
-                    aria-label="delete"
-                    onClick={() => {
-                      setSelectCateogry(row);
-                      setOpenD(true);
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
+                  {
+                    row?.isBanned ?  <>
+                      <Button onClick={() => {
+                        setSelectCateogry(row);
+deletePost()
+                      }}>Restore</Button>
+
+                    </> :
+                    <>
+                <IconButton
+                  aria-label="delete"
+                  onClick={() => {
+                    setSelectCateogry(row);
+                    setOpenD(true);
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+                    </>
+                  }
+
+
                   <ConfirmDialog
-                    title="Delete Post?"
+                    title="Ban Vendor?"
                     open={openD}
                     setOpen={setOpenD}
                     onConfirm={deletePost}
                   >
-                    Are you sure you want to delete this post?
+                    Are you sure you want to ban this vendor?
                   </ConfirmDialog>
                 </TableCell>
                 {/* <TableCell align="right" onClick={() => editCategory(row)}>
@@ -173,13 +186,14 @@ export default function VendorList() {
         selectCategory={selectCategory}
         open={open}
         onClose={handleClose}
+        getList={getList}
       />
     </div>
   );
 }
 
 function SimpleDialog(props) {
-  const { onClose, open, selectCategory } = props;
+  const { onClose, open, selectCategory, getList } = props;
   console.log(selectCategory);
   const [bgColor, setBgColor] = useState(
     selectCategory ? selectCategory.background : null
@@ -211,10 +225,13 @@ function SimpleDialog(props) {
     AdminAxios.put(`/vendor/${category.id}`, { update: category })
       .then((response) => {
         console.log(response.data);
+        getList()
         onClose();
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
+        toast.error(err.response.data.message);
+
         // dispatch(loaderMasterStopAction());
       });
   };
@@ -223,6 +240,7 @@ function SimpleDialog(props) {
     AdminAxios.post(`/vendor`, { document: category })
       .then((response) => {
         toast.success(response.data.message)
+        getList()
         onClose();
         // dispatch(loaderMasterStopAction());
       })

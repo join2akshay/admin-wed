@@ -116,12 +116,12 @@ export default function UserList() {
                   <DeleteIcon />
                 </IconButton>
                   <ConfirmDialog
-                    title="Delete Post?"
+                    title="Ban User?"
                     open={openD}
                     setOpen={setOpenD}
                     onConfirm={deletePost}
                   >
-                    Are you sure you want to delete this post?
+                    Are you sure you want to ban this user?
                   </ConfirmDialog>
                 </TableCell>
                 {/* <TableCell align="right" onClick={() => editCategory(row)}>
@@ -193,6 +193,9 @@ function SimpleDialog(props) {
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
+
+        toast.error(err.response.data.message);
+
         // dispatch(loaderMasterStopAction());
       });
   }
@@ -202,9 +205,12 @@ function SimpleDialog(props) {
       .then((response) => {
         console.log(response.data)
         onClose()
+
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
+        toast.error(err.response.data.message);
+
         // dispatch(loaderMasterStopAction());
       });
   }

@@ -179,6 +179,8 @@ function SimpleDialog(props) {
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
+        toast.error(err.response.data.message);
+
         // dispatch(loaderMasterStopAction());
       });
   }
@@ -191,6 +193,8 @@ function SimpleDialog(props) {
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
+        toast.error(err.response.data.message);
+
         // dispatch(loaderMasterStopAction());
       });
   }

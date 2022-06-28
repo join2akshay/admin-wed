@@ -146,12 +146,12 @@ export default function ItemList() {
         onClose={handleCloseV}
       />
       <ConfirmDialog
-        title="Delete Post?"
+        title="Delete Product?"
         open={openD}
         setOpen={setOpenD}
         onConfirm={deletePost}
       >
-        Are you sure you want to delete this post?
+        Are you sure you want to delete this Product?
       </ConfirmDialog>
     </div>
 
@@ -318,6 +318,8 @@ function SimpleDialog(props) {
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
+        toast.error(err.response.data.message);
+
         // dispatch(loaderMasterStopAction());
       });
   }
@@ -331,6 +333,8 @@ function SimpleDialog(props) {
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
+        toast.error(err.response.data.message);
+
         // dispatch(loaderMasterStopAction());
       });
   }

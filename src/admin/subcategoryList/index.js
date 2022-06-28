@@ -175,12 +175,12 @@ if(cat){
                   <DeleteIcon />
                 </IconButton>
                   <ConfirmDialog
-                    title="Delete Post?"
+                    title="Delete Sub Category?"
                     open={openD}
                     setOpen={setOpenD}
                     onConfirm={deletePost}
                   >
-                    Are you sure you want to delete this post?
+                    Are you sure you want to delete this Sub Category?
                   </ConfirmDialog>
                 </TableCell>
                 <TableCell align="right" onClick={() => editCategory(row)}>
@@ -261,6 +261,8 @@ const [cat2, setCat2] = useState('')
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
+        toast.error(err.response.data.message);
+
         // dispatch(loaderMasterStopAction());
       });
   }
@@ -273,9 +275,12 @@ const [cat2, setCat2] = useState('')
         getList()
         getSubCat()
 
+
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
+        toast.error(err.response.data.message);
+
         // dispatch(loaderMasterStopAction());
       });
   }
