@@ -94,7 +94,7 @@ export default function ItemList() {
     allData.map((item=>{
       return (
         <>
-          <Grid xs={12} sm={4} md={4} lg={4} marginLeft={2} marginTop={2}>
+          <Grid xs={12} sm={3} md={3} lg={3} marginLeft={2} marginTop={2}>
             <Card >
               <CardContent>
                 <Typography variant="h5" sx={{ fontSize: 16,fontWeight:600 }} color="text.secondary" gutterBottom>
@@ -116,7 +116,7 @@ export default function ItemList() {
                 <Button size="small" onClick={()=>{setSelectCateogry(item);setOpenV(true)} }>Open</Button>
                 <Button size="small" onClick={()=>editCategory(item)}>Edit</Button>
 
-                <Button size="small">Delete</Button>
+                <Button size="small" onClick={() => { setSelectCateogry(item); setOpenD(true) }}>Delete</Button>
 
               </CardActions>
             </Card>
@@ -137,6 +137,7 @@ export default function ItemList() {
         data={selectCategory}
         open={open}
         onClose={handleClose}
+        getList={getList}
       />
       <Viewer
 
@@ -144,6 +145,14 @@ export default function ItemList() {
         open={openV}
         onClose={handleCloseV}
       />
+      <ConfirmDialog
+        title="Delete Post?"
+        open={openD}
+        setOpen={setOpenD}
+        onConfirm={deletePost}
+      >
+        Are you sure you want to delete this post?
+      </ConfirmDialog>
     </div>
 
   )
@@ -151,7 +160,7 @@ export default function ItemList() {
 
 
 function SimpleDialog(props) {
-  const { onClose, open, data } = props;
+  const { onClose, open, data,getList } = props;
   console.log(data)
   const [bgColor, setBgColor] = useState(data ? data.background : null)
   const [allCat, setallCat] = useState([])
@@ -169,7 +178,7 @@ function SimpleDialog(props) {
         "description": "",
         "categoryId": "",
         "subCategoryId": "",
-        "priceBydays": {
+        "priceByDays": {
           "10": null,
           "20": null,
           "30": null
@@ -180,7 +189,7 @@ function SimpleDialog(props) {
           "30": null
         },
         "stock": "",
-        "images": {
+        "image": {
           "main": "",
           "sec1": "",
           "sec2": "",
@@ -199,7 +208,7 @@ function SimpleDialog(props) {
       }
   )
 
-  const [images, setImages] = useState({
+  const [image, setimage] = useState({
 
       "main": "",
       "sec1": "",
@@ -216,7 +225,7 @@ function SimpleDialog(props) {
     if (data) {
 
       setCategory(data)
-      setImages(data.images)
+      setimage(data.image)
       setCat(data.categoryId)
       setSubCat(data.subCategoryId)
     } else {
@@ -226,7 +235,7 @@ function SimpleDialog(props) {
         "description": "",
         "categoryId": "",
         "subCategoryId": "",
-        "priceBydays": {
+        "priceByDays": {
           "10": null,
           "20": null,
           "30": null
@@ -237,7 +246,7 @@ function SimpleDialog(props) {
           "30": null
         },
         "stock": "",
-        "images": {
+        "image": {
           "main": "",
           "sec1": "",
           "sec2": "",
@@ -273,7 +282,7 @@ function SimpleDialog(props) {
     // console.log(type)
     // console.log(e.target.value)
     // console.log(tempData)
-    tempData.priceBydays[type] = e.target.value
+    tempData.priceByDays[type] = e.target.value
     setCategory(tempData)
   }
   const updatePriceBYSpec = (type,e) => {
@@ -288,7 +297,7 @@ function SimpleDialog(props) {
 
   const updateImage = (type, e) => {
     let tempData = category;
-    tempData.images[type] = e
+    tempData.image[type] = e
     setCategory(tempData)
   }
 
@@ -301,9 +310,10 @@ function SimpleDialog(props) {
   };
 
   const update = () => {
-    AdminAxios.put(`/product/${category.id}`, { update:category })
+    AdminAxios.put(`/product/${category._id}`, { update:category })
       .then((response) => {
         console.log(response.data)
+        getList()
         onClose()
         // dispatch(loaderMasterStopAction());
       })
@@ -316,6 +326,7 @@ function SimpleDialog(props) {
     AdminAxios.post(`/product`, { document:category })
       .then((response) => {
         console.log(response.data)
+        getList()
         onClose()
         // dispatch(loaderMasterStopAction());
       })
@@ -358,6 +369,7 @@ function SimpleDialog(props) {
         })
 
         setallSubCat(tempdata)
+
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
@@ -415,7 +427,7 @@ function SimpleDialog(props) {
     //   setCategory({ ...category, iconImage: resp?.data?.secure_url });
     // }
     updateImage(type, resp?.data?.secure_url)
-    setImages({...images, [type]: resp?.data?.secure_url})
+    setimage({...image, [type]: resp?.data?.secure_url})
   };
 
   const handleChangeAllg = ({ target: { value, name } }) => {
@@ -468,11 +480,29 @@ function SimpleDialog(props) {
         </Grid>
         <Grid xs={12}>
           <label>
+            <TextField id="standard-basic" label="About" variant="standard" placeholder='Enter About' value={category?.about} onChange={(e) => { setCategory({ ...category, about: e.target.value }); }} />
+          </label>
+        </Grid>
+      </Grid>
+      <Divider />
+
+      <Grid container style={{ margin: '1rem' }}>
+        <Grid xs={12}>
+          {/* <label>
+            Description
+          </label> */}
+
+          {/* <EditIcon onCLick={}/> */}
+
+        </Grid>
+        <Grid xs={12}>
+          <label>
             <TextField id="standard-basic" label="Description" variant="standard" placeholder='Enter Description' value={category?.description} onChange={(e) => { setCategory({ ...category, description: e.target.value }); }} />
           </label>
         </Grid>
       </Grid>
       <Divider />
+
 
       <Grid container style={{ margin: '1rem' }}>
         <Grid xs={12}>
@@ -503,7 +533,10 @@ function SimpleDialog(props) {
       <Grid container style={{ margin: '1rem' }}>
         <Grid xs={12}>
 
-          <Select placeholder="Select sub-category" options={allSubCat} value={category.subCategoryId} onChange={(e) => { setCategory({ ...category, subCategoryId: e.value }); setSubCat(e.value)}} />
+          <Select placeholder="Select sub-category" options={allSubCat} value={
+            allSubCat.filter(option =>
+              option.value === subCat)
+          }  onChange={(e) => { setCategory({ ...category, subCategoryId: e.value }); setSubCat(e.value)}} />
         </Grid>
       </Grid>
       <Divider/>
@@ -526,11 +559,11 @@ function SimpleDialog(props) {
         <Grid xs={12}>
           <label>
             Price by days <br />
-            <TextField id="standard-basic" label="Price for 10 days" variant="standard" placeholder='Enter Price for 30 days' value={category?.priceBydays[10]} onChange={(e) => updatePriceBYD(10, e)} />
+            <TextField id="standard-basic" label="Price for 10 days" variant="standard" placeholder='Enter Price for 30 days' value={category?.priceByDays[10]} onChange={(e) => updatePriceBYD(10, e)} />
             <br />
-            <TextField id="standard-basic" label="Price for 10 days" variant="standard" placeholder='Enter Price for 30 days' value={category?.priceBydays[20]} onChange={(e) => updatePriceBYD(20, e)} />
+            <TextField id="standard-basic" label="Price for 10 days" variant="standard" placeholder='Enter Price for 30 days' value={category?.priceByDays[20]} onChange={(e) => updatePriceBYD(20, e)} />
             <br />
-            <TextField id="standard-basic" label="Price for 30 days" variant="standard" placeholder='Enter Price for 30 days' value={category?.priceBydays[30]} onChange={(e) => updatePriceBYD(30, e)} />
+            <TextField id="standard-basic" label="Price for 30 days" variant="standard" placeholder='Enter Price for 30 days' value={category?.priceByDays[30]} onChange={(e) => updatePriceBYD(30, e)} />
             <br />
           </label>
         </Grid>
@@ -566,7 +599,7 @@ function SimpleDialog(props) {
               height='125'
               className="profile_image"
               src={
-                images.main ||
+                image.main ||
                 'https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
               }
               alt="profile"
@@ -589,7 +622,7 @@ function SimpleDialog(props) {
               height='125'
               className="profile_image"
               src={
-                images.sec1 ||
+                image.sec1 ||
                 'https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
               }
               alt="profile"
@@ -613,7 +646,7 @@ function SimpleDialog(props) {
               height='125'
               className="profile_image"
               src={
-                images.sec2 ||
+                image.sec2 ||
                 'https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
               }
               alt="profile"
@@ -635,7 +668,7 @@ function SimpleDialog(props) {
               height='125'
               className="profile_image"
               src={
-                images.sec3 ||
+                image.sec3 ||
                 'https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
               }
               alt="profile"
@@ -657,7 +690,7 @@ function SimpleDialog(props) {
               height='125'
               className="profile_image"
               src={
-                images.sec4 ||
+                image.sec4 ||
                 'https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
               }
               alt="profile"
@@ -668,7 +701,7 @@ function SimpleDialog(props) {
               variant="standard"
               fullWidth
               style={{ marginBottom: '15px' }}
-              onChange={(e) => handlefilechange(e, 'sec3')}
+              onChange={(e) => handlefilechange(e, 'sec4')}
             />
           </div>
         </Grid>
@@ -766,11 +799,11 @@ const Viewer = ({ data, onClose ,open})=>{
           <Grid xs={12}>
             <label>
               Price by days <br />
-              10 - Rs.{data?.priceBydays['10']}
+              10 - Rs.{data?.priceByDays['10']}
               <br />
-              20 - Rs.{data?.priceBydays['20']}
+              20 - Rs.{data?.priceByDays['20']}
               <br />
-              30 - Rs.{data?.priceBydays['30']}
+              30 - Rs.{data?.priceByDays['30']}
               <br />
             </label>
           </Grid>
@@ -797,31 +830,31 @@ const Viewer = ({ data, onClose ,open})=>{
         <Grid container >
 
           <Grid xs={3} marginLeft={4} marginTop={4} display='flex' alignItems="center" flexDirection="column">
-            <img src={data?.images.main} width="125" height="125"/>
+            <img src={data?.image.main} width="125" height="125"/>
             <p>
               Image 1
             </p>
           </Grid>
           <Grid xs={3} marginLeft={4} marginTop={4} display='flex' alignItems="center" flexDirection="column">
-            <img src={data?.images.sec1} width="125" height="125"/>
+            <img src={data?.image.sec1} width="125" height="125"/>
             <p>
               Image 2
             </p>
           </Grid>
           <Grid xs={3} marginLeft={4} marginTop={4} display='flex' alignItems="center" flexDirection="column">
-            <img src={data?.images.sec2} width="125" height="125"/>
+            <img src={data?.image.sec2} width="125" height="125"/>
             <p>
               Image 3
             </p>
           </Grid>
           <Grid xs={3} marginLeft={4} marginTop={4} display='flex' alignItems="center" flexDirection="column">
-            <img src={data?.images.sec3} width="125" height="125"/>
+            <img src={data?.image.sec3} width="125" height="125"/>
             <p>
               Image 4
             </p>
           </Grid>
           <Grid xs={3} marginLeft={4} marginTop={4} display='flex' alignItems="center" flexDirection="column">
-            <img src={data?.images.sec4} width="125" height="125"/>
+            <img src={data?.image.sec4} width="125" height="125"/>
             <p>
               Image 5
             </p>
