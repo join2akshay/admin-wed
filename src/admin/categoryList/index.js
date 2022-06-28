@@ -101,7 +101,8 @@ const getList=()=>{
                 <TableCell component="th" scope="row">
                   {row.name}
                 </TableCell>
-                <TableCell align="right"><img src={row.iconImage}/> </TableCell>
+                <TableCell align="right"><img width='75'
+                  height='75' src={row.iconImage}/> </TableCell>
                 <TableCell align="right"><img src={row.image} width='125' height='125' /> </TableCell>
 
                 <TableCell align="right">{row.description}</TableCell>
