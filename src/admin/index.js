@@ -13,10 +13,10 @@ export default function Admin() {
           <div className="sidebar">
             <ul className="nav">
               <li>
-                <Link to="/admin/category">Category</Link>
+                <Link to="/category">Category</Link>
               </li>
               <li>
-                <Link to="/admin/subcategory">Subcategory</Link>
+                <Link to="/subcategory">Subcategory</Link>
               </li>
               <li>
                 <Link to="/settings">User</Link>
