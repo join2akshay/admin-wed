@@ -243,7 +243,7 @@ function SimpleDialog(props) {
     <Dialog onClose={handleClose} open={open} style={{ overFlowX: 'hidden' }}>
       <DialogTitle>Add New Category</DialogTitle>
       <Divider />
-      <Grid container style={{ margin: '1rem' }} style={{ margin: '1rem' }}>
+      <Grid container style={{ margin: '1rem' }}>
         <Grid item xs={12}>
           <Box>
             {/* <label>
