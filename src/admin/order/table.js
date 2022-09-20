@@ -77,8 +77,13 @@ update()
       <TableCell align="right">
         {
           openE ? <>
-            <Button variant='contained' onClick={()=>setOpenE(false)}>
+
+            <Button variant='contained' onClick={() => setOpenE(false)}>
               Save
+            </Button>
+
+            <Button variant='contained' onClick={() => setOpenE(false)}>
+              Cancle
             </Button>
 
           </> :

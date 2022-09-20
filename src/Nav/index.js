@@ -131,6 +131,10 @@ export default function Header() {
             <Link className={navItem2} component={RouterLink}  to="/user">User</Link>
             <Link className={navItem2} component={RouterLink} to="/vendor">Vendor</Link>
             <Link className={navItem2} component={RouterLink} to="/order">Order</Link>
+            <Link className={navItem2} component={RouterLink} to="/query">Query</Link>
+            <Link className={navItem2} component={RouterLink} to="/">Logout</Link>
+
+
 
           </ul>
         </div>
