@@ -1,6 +1,6 @@
 import axios from 'axios';
 export const Axios = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL1 || 'https://weddppy.herokuapp.com/api',
+  baseURL: process.env.REACT_APP_API_BASE_URL1 || 'https://wedppy.up.railway.app/api',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
@@ -10,7 +10,7 @@ export const Axios = axios.create({
 });
 
 export const AdminAxios = axios.create({
-  baseURL: 'https://weddppy.herokuapp.com/api/admin',
+  baseURL: 'https://wedppy.up.railway.app/api/admin',
   // baseURL: 'http://localhost:8000/api/admin',
   timeout: 30000,
   headers: {
@@ -21,7 +21,7 @@ export const AdminAxios = axios.create({
 });
 
 export const BaseAxios = axios.create({
-  baseURL: 'https://weddppy.herokuapp.com/',
+  baseURL: 'https://wedppy.up.railway.app/',
   // baseURL: 'http://localhost:8000/',
   timeout: 30000,
   headers: {
