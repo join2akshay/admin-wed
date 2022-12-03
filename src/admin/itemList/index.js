@@ -558,7 +558,7 @@ function SimpleDialog(props) {
       <Grid container style={{ margin: '1rem' }}>
         <Grid xs={12}>
 
-          <Select placeholder="Select sub-category" options={allSubCat} value={
+          <Select placeholder="Select Combination" options={allSubCat} value={
             allSubCat.filter(option =>
               option.value === subCat)
           }  onChange={(e) => { setCategory({ ...category, subCategoryId: e.value }); setSubCat(e.value)}} />
