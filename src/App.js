@@ -13,10 +13,17 @@ import VendorList from './admin/vendor';
 import OrderList from './admin/order';
 import { initializeApp } from 'firebase/app';
 import Query from './admin/Query';
+import { AdminAxios, BaseAxios } from './actions/utils';
+import { useEffect } from 'react';
 
 
 function App() {
-
+  const baseHit=()=>{
+    BaseAxios.get('/').then((res)=>res)
+  }
+  useEffect(() => {
+    baseHit()
+  }, [])
 
 // TODO: Replace the following with your app's Firebase project configuration
   // const firebaseConfig = {
