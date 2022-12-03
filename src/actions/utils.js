@@ -21,7 +21,7 @@ export const AdminAxios = axios.create({
 });
 
 export const BaseAxios = axios.create({
-  baseURL: 'https://weddppy.herokuapp.com/api/admin',
+  baseURL: 'https://weddppy.herokuapp.com/',
   // baseURL: 'http://localhost:8000/',
   timeout: 30000,
   headers: {
