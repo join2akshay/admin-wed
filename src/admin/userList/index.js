@@ -8,6 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ConfirmDialog from '../../delete';
 import { AdminAxios } from '../../actions/utils';
 import Header from '../../Nav';
+import Loader from '../Loader';
 
 
 // import Files from "react-butterfiles";
@@ -18,13 +19,15 @@ export default function UserList() {
   const [openD, setOpenD] = React.useState(false);
 
   const [selectCategory, setSelectCateogry] = useState(null)
+  const [selectCategory2, setSelectCateogry2] = useState(null)
+  const [loading, setLoading] = useState(false);
   const handleClickOpen = () => {
     setOpen(true);
   };
-  const handleClickOpen2 = () => {
-    setSelectCateogry(null)
-    setOpen(true);
-  };
+  // const handleClickOpen2 = () => {
+  //   setSelectCateogry(null)
+  //   setOpen(true);
+  // };
 
   const handleClose = (value) => {
     setOpen(false);
@@ -34,39 +37,64 @@ export default function UserList() {
     getList()
 
   }, [])
+  useEffect(() => {
+    console.log(selectCategory2)
+    if(selectCategory2){
+
+      restore()
+    }
+
+  }, [selectCategory2])
 
   const getList = () => {
+    setLoading(true)
     AdminAxios.get(`/user`)
       .then((response) => {
         console.log(response.data[0].data)
         setallData(response.data[0].data)
+        setLoading(false)
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
+        setLoading(false)
         // dispatch(loaderMasterStopAction());
       });
 
   };
 
   const deletePost = (id) => {
+    setLoading(true)
     console.log(selectCategory)
     AdminAxios.delete(`/user/${selectCategory._id}`)
       .then((response) => {
         setSelectCateogry(null)
-
+        setLoading(false)
         getList();
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
+        setLoading(false)
+        // dispatch(loaderMasterStopAction());
+      });
+
+  }
+  const restore = (id) => {
+    setLoading(true)
+    console.log(selectCategory)
+    AdminAxios.delete(`/user/${selectCategory2._id}`)
+      .then((response) => {
+        setSelectCateogry(null)
+        setLoading(false)
+        getList();
+        // dispatch(loaderMasterStopAction());
+      })
+      .catch((err) => {
+        setLoading(false)
         // dispatch(loaderMasterStopAction());
       });
 
   }
 
-  const editCategory = (data) => {
-    setSelectCateogry(data)
-    handleClickOpen()
-  }
 
   return (
     <div>
@@ -107,7 +135,7 @@ export default function UserList() {
                 </TableCell>
                 <TableCell align="right">{row?.email || 'N/A'} </TableCell>
                 <TableCell align="right"><img src={row?.profileUrl ||
-                  'https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'} width='100' height='100' /> </TableCell>
+                  'https://res.cloudinary.com/wedppy/image/upload/v1670059407/placeholder_eyey9k.png'} width='100' height='100' /> </TableCell>
 
                 <TableCell align="right">{row?.phone}</TableCell>
                 <TableCell align="right">{row?.isBanned ? 'Unactive':'Active'}</TableCell>
@@ -115,8 +143,8 @@ export default function UserList() {
                 <TableCell align="right">  {
                   row?.isBanned ? <>
                     <Button onClick={() => {
-                      setSelectCateogry(row);
-                      deletePost()
+                      setSelectCateogry2(row);
+                      
                     }}>Restore</Button>
 
                   </> :
@@ -157,6 +185,11 @@ export default function UserList() {
         open={open}
         onClose={handleClose}
       />
+        {
+        loading &&
+        <Loader/>
+     
+      }
     </div>
   )
 }
@@ -311,7 +344,7 @@ function SimpleDialog(props) {
                 className="profile_image"
                 src={
                   category?.iconImage ||
-                  'https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
+                  'https://res.cloudinary.com/wedppy/image/upload/v1670059407/placeholder_eyey9k.png'
                 }
                 alt="profile"
               />
@@ -344,7 +377,7 @@ function SimpleDialog(props) {
                 className="profile_image"
                 src={
                   category?.image ||
-                  'https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
+                  'https://res.cloudinary.com/wedppy/image/upload/v1670059407/placeholder_eyey9k.png'
                 }
                 alt="profile"
               />

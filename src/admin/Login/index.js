@@ -7,6 +7,8 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { Button } from "@mui/material";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Oval } from "react-loader-spinner";
+import Loader from "../Loader";
 
 function Login() {
   // React States
@@ -15,6 +17,8 @@ function Login() {
   const [errorMessages, setErrorMessages] = useState({});
   const [err, setErr] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const [uName, setuName] = useState("");
   const [pass, setPass] = useState("");
 
@@ -36,6 +40,7 @@ function Login() {
   };
 
   const handleSubmit = (event) => {
+    setLoading(true)
     //Prevent page reload
     event.preventDefault();
     const auth = getAuth();
@@ -53,15 +58,19 @@ function Login() {
           .then((response) => {
             localStorage.setItem('ltk', response.data.token)
             localStorage.setItem('user', JSON.stringify(response.data.user))
+            setLoading(false)
             navigate("/category");
             toast.success("Logged In");
           })
           .catch((err) => {
+            setLoading(false)
+            toast.error(err)
             console.log(err);
           });
         // ...
       })
       .catch((error) => {
+        setLoading(false)
         setErr(error.message);
       });
 
@@ -131,6 +140,11 @@ function Login() {
         <div className="title">Sign In</div>
         {isSubmitted ? <div>User is successfully logged in</div> : renderForm}
       </div>
+      {
+        loading &&
+        <Loader/>
+     
+      }
     </div>
   );
 }

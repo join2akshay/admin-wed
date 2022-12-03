@@ -10,7 +10,8 @@ export const Axios = axios.create({
 });
 
 export const AdminAxios = axios.create({
-  baseURL: `${process.env.REACT_APP_API_BASE_URL}/admin` || 'https://weddppy.herokuapp.com/api/admin',
+  // baseURL: 'https://weddppy.herokuapp.com/api/admin',
+  baseURL: 'http://localhost:8000/api/admin',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',

@@ -24,6 +24,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ConfirmDialog from "../../delete";
 import { AdminAxios } from "../../actions/utils";
 import Header from "../../Nav";
+import Loader from "../Loader";
 
 // import Files from "react-butterfiles";
 
@@ -31,8 +32,12 @@ export default function VendorList() {
   const [allData, setallData] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [openD, setOpenD] = React.useState(false);
+  const [loading, setLoading] = useState(false);
+
 
   const [selectCategory, setSelectCateogry] = useState(null);
+  const [selectCategory2, setSelectCateogry2] = useState(null);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -48,12 +53,20 @@ export default function VendorList() {
   useEffect(() => {
     getList();
   }, []);
+  useEffect(() => {
+    if(selectCategory2){
+      restore()
+    }
+
+  }, [selectCategory2]);
 
   const getList = () => {
+    setLoading(true)
     AdminAxios.get(`/vendor`)
       .then((response) => {
         console.log(response.data[0].data);
         setallData(response.data[0].data);
+        setLoading(false)
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
@@ -62,11 +75,26 @@ export default function VendorList() {
   };
 
   const deletePost = (id) => {
+    setLoading(true)
     console.log(selectCategory);
     AdminAxios.delete(`/vendor/${selectCategory._id}`)
       .then((response) => {
         setSelectCateogry(null);
-
+        setLoading(false)
+        getList();
+        // dispatch(loaderMasterStopAction());
+      })
+      .catch((err) => {
+        // dispatch(loaderMasterStopAction());
+      });
+  };
+  const restore = (id) => {
+    setLoading(true)
+    console.log(selectCategory);
+    AdminAxios.delete(`/vendor/${selectCategory2._id}`)
+      .then((response) => {
+        setSelectCateogry(null);
+        setLoading(false)
         getList();
         // dispatch(loaderMasterStopAction());
       })
@@ -129,7 +157,7 @@ export default function VendorList() {
                   <img
                     src={
                       row?.profileUrl ||
-                      "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+                      "https://res.cloudinary.com/wedppy/image/upload/v1670059407/placeholder_eyey9k.png"
                     }
                     width="100"
                     height="100"
@@ -144,8 +172,8 @@ export default function VendorList() {
                   {
                     row?.isBanned ?  <>
                       <Button onClick={() => {
-                        setSelectCateogry(row);
-deletePost()
+                        setSelectCateogry2(row);
+
                       }}>Restore</Button>
 
                     </> :
@@ -187,13 +215,20 @@ deletePost()
         open={open}
         onClose={handleClose}
         getList={getList}
+        loading={loading}
+        setLoading={setLoading}
       />
+       {
+        loading &&
+        <Loader/>
+     
+      }
     </div>
   );
 }
 
 function SimpleDialog(props) {
-  const { onClose, open, selectCategory, getList } = props;
+  const { onClose, open, selectCategory, getList,setLoading,loading } = props;
   console.log(selectCategory);
   const [bgColor, setBgColor] = useState(
     selectCategory ? selectCategory.background : null
@@ -222,6 +257,7 @@ function SimpleDialog(props) {
   };
 
   const update = () => {
+    setLoading(true)
     AdminAxios.put(`/vendor/${category.id}`, { update: category })
       .then((response) => {
         console.log(response.data);
@@ -230,6 +266,7 @@ function SimpleDialog(props) {
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
+        setLoading(false)
         toast.error(err.response.data.message);
 
         // dispatch(loaderMasterStopAction());
@@ -237,6 +274,7 @@ function SimpleDialog(props) {
   };
 
   const create = () => {
+    setLoading(true)
     AdminAxios.post(`/vendor`, { document: category })
       .then((response) => {
         toast.success(response.data.message)
@@ -245,6 +283,7 @@ function SimpleDialog(props) {
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
+        setLoading(false)
         toast.error(err.response.data.message);
       });
   };
@@ -422,6 +461,11 @@ function SimpleDialog(props) {
           </Box>
         </Grid>
       </Grid>
+      {
+        loading &&
+        <Loader/>
+     
+      }
     </Dialog>
   );
 }

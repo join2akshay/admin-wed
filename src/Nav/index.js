@@ -125,7 +125,7 @@ export default function Header() {
         <div>
           <ul className={navItem1}>
             <Link className={navItem2} component={RouterLink} to="/category">Category</Link>
-            <Link className={navItem2} component={RouterLink} to="/subcategory">Sub-Category</Link>
+            {/* <Link className={navItem2} component={RouterLink} to="/subcategory">Sub-Category</Link> */}
 
             <Link className={navItem2} component={RouterLink} to="/item">Products</Link>
             <Link className={navItem2} component={RouterLink}  to="/user">User</Link>

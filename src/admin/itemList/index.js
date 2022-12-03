@@ -10,6 +10,7 @@ import { AdminAxios } from '../../actions/utils';
 import Header from '../../Nav';
 import EditIcon from '@mui/icons-material/Edit';
 import Select from 'react-select';
+import Loader from '../Loader';
 
 
 // import Files from "react-butterfiles";
@@ -19,7 +20,7 @@ export default function ItemList() {
   const [open, setOpen] = React.useState(false);
   const [openD, setOpenD] = React.useState(false);
   const [openV, setOpenV] = React.useState(false);
-
+  const [loading, setLoading] = useState(false);
 
   const [selectCategory, setSelectCateogry] = useState(null)
   const handleClickOpen = () => {
@@ -44,28 +45,33 @@ export default function ItemList() {
   }, [])
 
   const getList = () => {
+    setLoading(true)
     AdminAxios.get(`/product`)
       .then((response) => {
         console.log(response.data[0].data)
         setallData(response.data[0].data)
+        setLoading(false)
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
+        setLoading(false)
         // dispatch(loaderMasterStopAction());
       });
 
   };
 
   const deletePost = (id) => {
+    setLoading(true)
     console.log(selectCategory)
     AdminAxios.delete(`/product/${selectCategory._id}`)
       .then((response) => {
         setSelectCateogry(null)
-
+        setLoading(false)
         getList();
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
+        setLoading(false)
         // dispatch(loaderMasterStopAction());
       });
 
@@ -122,6 +128,11 @@ export default function ItemList() {
             </Card>
 
           </Grid>
+          {
+        loading &&
+        <Loader/>
+     
+      }
         </>
       )
     }))
@@ -138,6 +149,8 @@ export default function ItemList() {
         open={open}
         onClose={handleClose}
         getList={getList}
+        loading={loading}
+        setLoading={setLoading}
       />
       <Viewer
 
@@ -160,7 +173,7 @@ export default function ItemList() {
 
 
 function SimpleDialog(props) {
-  const { onClose, open, data,getList } = props;
+  const { onClose, open, data,getList,loading,setLoading } = props;
   console.log(data)
   const [bgColor, setBgColor] = useState(data ? data.background : null)
   const [allCat, setallCat] = useState([])
@@ -219,7 +232,7 @@ function SimpleDialog(props) {
 })
 
   useEffect(() => {
-
+    getSubCat()
     getCatList()
 
     if (data) {
@@ -310,14 +323,17 @@ function SimpleDialog(props) {
   };
 
   const update = () => {
+    setLoading(true)
     AdminAxios.put(`/product/${category._id}`, { update:category })
       .then((response) => {
         console.log(response.data)
+        setLoading(false)
         getList()
         onClose()
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
+        setLoading(false)
         toast.error(err.response.data.message);
 
         // dispatch(loaderMasterStopAction());
@@ -325,14 +341,17 @@ function SimpleDialog(props) {
   }
 
   const create = () => {
+    setLoading(true)
     AdminAxios.post(`/product`, { document:category })
       .then((response) => {
         console.log(response.data)
+        setLoading(false)
         getList()
         onClose()
         // dispatch(loaderMasterStopAction());
       })
       .catch((err) => {
+        setLoading(false)
         toast.error(err.response.data.message);
 
         // dispatch(loaderMasterStopAction());
@@ -363,14 +382,15 @@ function SimpleDialog(props) {
   }, [subCat])
 
   const getSubCat=()=>{
-    AdminAxios.get(`/sub-category/${cat}`)
+    AdminAxios.get(`/product`)
       .then((response) => {
         console.log(response.data)
         let tempdata = [];
 
-        response.data.map(item => {
-          tempdata.push({ label: item.name, value: item.id })
+        response.data[0].data.map(item => {
+          tempdata.push({ label: item.name, value: item._id })
         })
+        console.log(tempdata)
 
         setallSubCat(tempdata)
 
@@ -448,6 +468,7 @@ function SimpleDialog(props) {
    if(category._id){
     update();
    }else{
+    console.log(category)
     create()
    }
   }
@@ -511,7 +532,7 @@ function SimpleDialog(props) {
       <Grid container style={{ margin: '1rem' }}>
         <Grid xs={12}>
 
-          <TextField id="standard-basic" label="Buying Price" variant="standard" placeholder='Enter Buying Price' value={category?.buyingPrice} onChange={(e) => { setCategory({ ...category, buyingPrice: e.target.value }); setCat(e.target.value)}} />
+          <TextField id="standard-basic" type='number' label="Buying Price" variant="standard" placeholder='Enter Buying Price' value={category?.buyingPrice} onChange={(e) => { setCategory({ ...category, buyingPrice: e.target.value }); setCat(e.target.value)}} />
 
         </Grid>
 
@@ -519,7 +540,7 @@ function SimpleDialog(props) {
       <Divider />
       <Grid container style={{ margin: '1rem' }}>
         <Grid xs={12}>
-          <TextField id="standard-basic" label="Stock" variant="standard" placeholder='Enter Stock' value={category?.stock} onChange={(e) => { setCategory({ ...category, stock: e.target.value }); }} />
+          <TextField id="standard-basic" type='number' label="Stock" variant="standard" placeholder='Enter Stock' value={category?.stock} onChange={(e) => { setCategory({ ...category, stock: e.target.value }); }} />
         </Grid>
 
       </Grid>
@@ -548,11 +569,11 @@ function SimpleDialog(props) {
         <Grid xs={12}>
           <label>
             Price by quantity <br />
-            <TextField id="standard-basic" label="Price for 10 items" variant="standard" placeholder='Enter Price for 10 items' value={category?.priceByQuantity[10]} onChange={(e) => updatePriceBYQ(10,e)} />
+            <TextField id="standard-basic" type='number' label="Price for 10 items" variant="standard" placeholder='Enter Price for 10 items' value={category?.priceByQuantity[10]} onChange={(e) => updatePriceBYQ(10,e)} />
             <br />
-            <TextField id="standard-basic" label="Price for 20 items" variant="standard" placeholder='Enter Price for 20 items' value={category?.priceByQuantity[20]} onChange={(e) => updatePriceBYQ(20, e)} />
+            <TextField id="standard-basic" type='number' label="Price for 20 items" variant="standard" placeholder='Enter Price for 20 items' value={category?.priceByQuantity[20]} onChange={(e) => updatePriceBYQ(20, e)} />
             <br />
-            <TextField id="standard-basic" label="Price for 30 items" variant="standard" placeholder='Enter Price for 30 items' value={category?.priceByQuantity[30]} onChange={(e) => updatePriceBYQ(30, e)} />
+            <TextField id="standard-basic" type='number' label="Price for 30 items" variant="standard" placeholder='Enter Price for 30 items' value={category?.priceByQuantity[30]} onChange={(e) => updatePriceBYQ(30, e)} />
             <br />
           </label>
         </Grid>
@@ -563,11 +584,11 @@ function SimpleDialog(props) {
         <Grid xs={12}>
           <label>
             Price by days <br />
-            <TextField id="standard-basic" label="Price for 10 days" variant="standard" placeholder='Enter Price for 30 days' value={category?.priceByDays[10]} onChange={(e) => updatePriceBYD(10, e)} />
+            <TextField id="standard-basic" type='number' label="Price for 10 days" variant="standard" placeholder='Enter Price for 30 days' value={category?.priceByDays[10]} onChange={(e) => updatePriceBYD(10, e)} />
             <br />
-            <TextField id="standard-basic" label="Price for 10 days" variant="standard" placeholder='Enter Price for 30 days' value={category?.priceByDays[20]} onChange={(e) => updatePriceBYD(20, e)} />
+            <TextField id="standard-basic" type='number' label="Price for 10 days" variant="standard" placeholder='Enter Price for 30 days' value={category?.priceByDays[20]} onChange={(e) => updatePriceBYD(20, e)} />
             <br />
-            <TextField id="standard-basic" label="Price for 30 days" variant="standard" placeholder='Enter Price for 30 days' value={category?.priceByDays[30]} onChange={(e) => updatePriceBYD(30, e)} />
+            <TextField id="standard-basic" type='number' label="Price for 30 days" variant="standard" placeholder='Enter Price for 30 days' value={category?.priceByDays[30]} onChange={(e) => updatePriceBYD(30, e)} />
             <br />
           </label>
         </Grid>
@@ -604,7 +625,7 @@ function SimpleDialog(props) {
               className="profile_image"
               src={
                 image.main ||
-                'https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
+                'https://res.cloudinary.com/wedppy/image/upload/v1670059407/placeholder_eyey9k.png'
               }
               alt="profile"
             />
@@ -627,7 +648,7 @@ function SimpleDialog(props) {
               className="profile_image"
               src={
                 image.sec1 ||
-                'https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
+                'https://res.cloudinary.com/wedppy/image/upload/v1670059407/placeholder_eyey9k.png'
               }
               alt="profile"
             />
@@ -651,7 +672,7 @@ function SimpleDialog(props) {
               className="profile_image"
               src={
                 image.sec2 ||
-                'https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
+                'https://res.cloudinary.com/wedppy/image/upload/v1670059407/placeholder_eyey9k.png'
               }
               alt="profile"
             />
@@ -673,7 +694,7 @@ function SimpleDialog(props) {
               className="profile_image"
               src={
                 image.sec3 ||
-                'https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
+                'https://res.cloudinary.com/wedppy/image/upload/v1670059407/placeholder_eyey9k.png'
               }
               alt="profile"
             />
@@ -695,7 +716,7 @@ function SimpleDialog(props) {
               className="profile_image"
               src={
                 image.sec4 ||
-                'https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
+                'https://res.cloudinary.com/wedppy/image/upload/v1670059407/placeholder_eyey9k.png'
               }
               alt="profile"
             />
@@ -723,7 +744,11 @@ function SimpleDialog(props) {
           </Button>
         </Grid>
       </Grid>
-
+      {
+        loading &&
+        <Loader/>
+     
+      }
     </Dialog>
   );
 }
@@ -874,7 +899,7 @@ const Viewer = ({ data, onClose ,open})=>{
             </Button>
           </Grid>
         </Grid>
-
+      
     </Dialog>
     </>
   )

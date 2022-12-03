@@ -30,10 +30,17 @@ const [allData, setallData] = useState([])
     setOpen(false);
   };
 
-useEffect(() => {
-getList()
+  useEffect(() => {
+    // window.location.reload();
+  getList()
+  
+  }, [])
+  // useEffect(() => {
+  //   // window.location.reload();
 
-}, [])
+  //   setOpen(true);
+  
+  // }, [selectCategory])
 
 const getList=()=>{
   AdminAxios.get(`/category`)
@@ -291,7 +298,7 @@ function SimpleDialog(props) {
                 className="profile_image"
                 src={
                   category?.iconImage ||
-                  'https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
+                  'https://res.cloudinary.com/wedppy/image/upload/v1670059407/placeholder_eyey9k.png'
                 }
                 alt="profile"
               />
@@ -326,7 +333,7 @@ function SimpleDialog(props) {
                 className="profile_image"
                 src={
                   category?.image ||
-                  'https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
+                  'https://res.cloudinary.com/wedppy/image/upload/v1670059407/placeholder_eyey9k.png'
                 }
                 alt="profile"
               />
